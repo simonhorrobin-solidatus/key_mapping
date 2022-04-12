@@ -1,6 +1,4 @@
 #Inspired by https://apple.stackexchange.com/questions/329085/tilde-and-plus-minus-±-in-wrong-place-on-keyboard
-
-su solidatusadmin
 echo "       su " $?
 
 mkdir -p ~/.varmilo
@@ -9,7 +7,7 @@ echo "      dir " $?
 product_id=$(hidutil list | grep "Varmilo Keyboard" | head -1 | awk -F"    " '{print $2}')
 echo "ProductID " $product_id
 
-cat << EOF > ~/.varmilo/map && chmod +x ~/.varmilo/map.sh
+sudo cat << EOF > /Users/simonhorrobin/.varmilo/map.sh && chmod +x /Users/simonhorrobin/.varmilo/map.sh
 hidutil property --matching '{"ProductID":$product_id}' --set '{"UserKeyMapping":
     [{"HIDKeyboardModifierMappingSrc":0x700000035,
       "HIDKeyboardModifierMappingDst":0x700000064},
@@ -19,7 +17,7 @@ hidutil property --matching '{"ProductID":$product_id}' --set '{"UserKeyMapping"
 EOF
 echo "      map " $?
 
-sudo /usr/bin/env bash -c "cat > /Library/LaunchDaemons/org.custom.varmilo-map.plist" << EOF
+sudo /usr/bin/env bash -c "cat > /Users/simonhorrobin/Library/LaunchAgents/org.custom.varmilo-map.plist" << EOF
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
@@ -31,7 +29,7 @@ sudo /usr/bin/env bash -c "cat > /Library/LaunchDaemons/org.custom.varmilo-map.p
             <string>/usr/bin/hidutil</string>
             <string>property</string>
             <string>--set</string>
-            <string>${HOME}/.varmilo/map</string>
+            <string>${HOME}/.varmilo/map.sh</string>
         </array>
         <key>RunAtLoad</key>
         <true/>
@@ -40,5 +38,5 @@ sudo /usr/bin/env bash -c "cat > /Library/LaunchDaemons/org.custom.varmilo-map.p
 EOF
 echo "    plist " $?
 
-sudo launchctl load -w -- /Library/LaunchDaemons/org.custom.varmilo-map.plist
+sudo launchctl bootstrap gui/503 /Users/simonhorrobin/Library/LaunchAgents/org.custom.varmilo-map.plist
 echo "launchctl " $?
